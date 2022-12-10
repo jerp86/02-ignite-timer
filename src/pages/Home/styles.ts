@@ -28,4 +28,18 @@ export const FormContainer = styled.div`
   flex-wrap: wrap;
 `
 
-export const CountdownContainer = styled.div``
+export const CountdownContainer = styled.div`
+  font-size: 10rem;
+  font-family: 'Roboto Mono', monospace;
+  line-height: 8rem;
+  color: ${({ theme }) => theme['gray-100']};
+
+  display: flex;
+  gap: 1rem;
+
+  span {
+    background-color: ${({ theme }) => theme['gray-700']};
+    padding: 2rem 1rem;
+    border-radius: 8px;
+  }
+`
