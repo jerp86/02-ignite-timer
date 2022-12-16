@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { differenceInSeconds } from 'date-fns'
 import { Play } from 'phosphor-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
@@ -45,7 +46,7 @@ export const Home = () => {
   })
 
   const handleCreateNewCycle = ({ minutesAmount, task }: NewCycleFormData) => {
-    const id = String(new Date().getTime())
+    const id = String(new Date().getTime()) // alterar para crypto.randomUUID()
     const newCycle: Cycle = {
       id,
       task,
@@ -72,6 +73,16 @@ export const Home = () => {
 
   const task = watch('task')
   const isSubmitDisabled = !task
+
+  useEffect(() => {
+    if (activeCycle) {
+      setInterval(() => {
+        setAmountSecondsPassed(
+          differenceInSeconds(new Date(), activeCycle.startDate),
+        )
+      }, 1000)
+    }
+  }, [activeCycle])
 
   return (
     <HomeContainer>
