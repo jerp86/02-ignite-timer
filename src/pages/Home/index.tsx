@@ -79,8 +79,8 @@ export const Home = () => {
   const isSubmitDisabled = !task
 
   const handleInterruptCycle = () => {
-    setCycles(
-      cycles.map((cycle) =>
+    setCycles((state) =>
+      state.map((cycle) =>
         cycle.id === activeCycle?.id
           ? { ...cycle, interruptedDate: new Date() }
           : cycle,
