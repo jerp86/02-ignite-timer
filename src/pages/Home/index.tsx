@@ -77,6 +77,18 @@ export const Home = () => {
   const task = watch('task')
   const isSubmitDisabled = !task
 
+  const handleInterruptCycle = () => {
+    setCycles(
+      cycles.map((cycle) =>
+        cycle.id === activeCycle?.id
+          ? { ...cycle, interruptedDate: new Date() }
+          : cycle,
+      ),
+    )
+
+    setActiveCycleId(null)
+  }
+
   useEffect(() => {
     let interval: number
 
@@ -141,7 +153,7 @@ export const Home = () => {
         </CountdownContainer>
 
         {activeCycle ? (
-          <StopCountdownButton type="button">
+          <StopCountdownButton type="button" onClick={handleInterruptCycle}>
             <HandPalm size={24} />
             Interromper
           </StopCountdownButton>
