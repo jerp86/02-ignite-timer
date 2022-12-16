@@ -95,14 +95,31 @@ export const Home = () => {
 
     if (activeCycle) {
       interval = setInterval(() => {
-        setAmountSecondsPassed(
-          differenceInSeconds(new Date(), activeCycle.startDate),
+        const secondsDifference = differenceInSeconds(
+          new Date(),
+          activeCycle.startDate,
         )
+
+        if (secondsDifference >= totalSeconds) {
+          setCycles((state) =>
+            state.map((cycle) =>
+              cycle.id === activeCycle?.id
+                ? { ...cycle, finishedDate: new Date() }
+                : cycle,
+            ),
+          )
+
+          setAmountSecondsPassed(totalSeconds)
+          setActiveCycleId(null)
+          clearInterval(interval)
+        } else {
+          setAmountSecondsPassed(secondsDifference)
+        }
       }, 1000)
     }
 
     return () => clearInterval(interval)
-  }, [activeCycle])
+  }, [activeCycle, totalSeconds])
 
   useEffect(() => {
     if (activeCycle) {
