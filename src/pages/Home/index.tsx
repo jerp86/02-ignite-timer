@@ -89,6 +89,12 @@ export const Home = () => {
     return () => clearInterval(interval)
   }, [activeCycle])
 
+  useEffect(() => {
+    if (activeCycle) {
+      document.title = `${minutes}:${seconds}`
+    }
+  }, [activeCycle, minutes, seconds])
+
   return (
     <HomeContainer>
       <form onSubmit={handleSubmit(handleCreateNewCycle)}>
