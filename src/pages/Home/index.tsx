@@ -33,7 +33,9 @@ export type NewCycleFormData = z.infer<typeof newCycleFormValidationSchema>
 interface CycleContextType {
   activeCycle: Cycle | undefined
   activeCycleId: string | null
+  amountSecondsPassed: number
   markCurrentCycleAsFinished: () => void
+  setSecondsPassed: (seconds: number) => void
 }
 
 export const CycleContext = createContext({} as CycleContextType)
@@ -41,6 +43,7 @@ export const CycleContext = createContext({} as CycleContextType)
 export const Home = () => {
   const [cycles, setCycles] = useState<Cycle[]>([])
   const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
+  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
 
   const newCycleForm = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema),
@@ -51,7 +54,10 @@ export const Home = () => {
   })
 
   const { handleSubmit, reset, watch } = newCycleForm
+
   const activeCycle = cycles.find(({ id }) => id === activeCycleId)
+  const task = watch('task')
+  const isSubmitDisabled = !task
 
   const markCurrentCycleAsFinished = () => {
     setCycles((state) =>
@@ -61,7 +67,11 @@ export const Home = () => {
           : cycle,
       ),
     )
+
+    setActiveCycleId(null)
   }
+
+  const setSecondsPassed = (seconds: number) => setAmountSecondsPassed(seconds)
 
   const handleCreateNewCycle = ({ minutesAmount, task }: NewCycleFormData) => {
     const id = String(new Date().getTime()) // alterar para crypto.randomUUID()
@@ -74,13 +84,10 @@ export const Home = () => {
 
     setCycles((state) => [...state, newCycle])
     setActiveCycleId(id)
-    // setAmountSecondsPassed(0)
+    setAmountSecondsPassed(0)
 
     reset()
   }
-
-  const task = watch('task')
-  const isSubmitDisabled = !task
 
   const handleInterruptCycle = () => {
     setCycles((state) =>
@@ -98,7 +105,13 @@ export const Home = () => {
     <HomeContainer>
       <form onSubmit={handleSubmit(handleCreateNewCycle)}>
         <CycleContext.Provider
-          value={{ activeCycle, activeCycleId, markCurrentCycleAsFinished }}
+          value={{
+            activeCycle,
+            activeCycleId,
+            amountSecondsPassed,
+            markCurrentCycleAsFinished,
+            setSecondsPassed,
+          }}
         >
           <FormProvider {...newCycleForm}>
             <NewCycleForm />
