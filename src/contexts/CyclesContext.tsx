@@ -55,7 +55,7 @@ export const CyclesContextProvider = ({
   const setSecondsPassed = (seconds: number) => setAmountSecondsPassed(seconds)
 
   const createNewCycle = ({ minutesAmount, task }: CreateCycleData) => {
-    const id = String(crypto.randomUUID)
+    const id = String(crypto.randomUUID())
     const newCycle: Cycle = {
       id,
       task,
