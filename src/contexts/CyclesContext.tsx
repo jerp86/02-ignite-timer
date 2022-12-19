@@ -63,6 +63,18 @@ export const CyclesContextProvider = ({
         }
       }
 
+      if (action.type === 'MARK_CURRENT_CYCLE_AS_FINISHED') {
+        return {
+          ...state,
+          activeCycleId: null,
+          cycles: state.cycles.map((cycle) =>
+            cycle.id === state.activeCycleId
+              ? { ...cycle, finishedDate: new Date() }
+              : cycle,
+          ),
+        }
+      }
+
       return state
     },
     {
@@ -74,22 +86,6 @@ export const CyclesContextProvider = ({
   const { activeCycleId, cycles } = cycleState
 
   const activeCycle = cycles.find(({ id }) => id === activeCycleId)
-
-  const markCurrentCycleAsFinished = () => {
-    dispatch({
-      type: 'MARK_CURRENT_CYCLE_AS_FINISHED',
-      payload: {
-        activeCycleId,
-      },
-    })
-    // setCycles((state) =>
-    //   state.map((cycle) =>
-    //     cycle.id === activeCycle?.id
-    //       ? { ...cycle, finishedDate: new Date() }
-    //       : cycle,
-    //   ),
-    // )
-  }
 
   const setSecondsPassed = (seconds: number) => setAmountSecondsPassed(seconds)
 
@@ -109,6 +105,15 @@ export const CyclesContextProvider = ({
       },
     })
     setAmountSecondsPassed(0)
+  }
+
+  const markCurrentCycleAsFinished = () => {
+    dispatch({
+      type: 'MARK_CURRENT_CYCLE_AS_FINISHED',
+      payload: {
+        activeCycleId,
+      },
+    })
   }
 
   const interruptCurrentCycle = () => {
