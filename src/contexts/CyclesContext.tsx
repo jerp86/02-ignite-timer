@@ -1,4 +1,10 @@
-import { createContext, ReactNode, useReducer, useState } from 'react'
+import {
+  createContext,
+  ReactNode,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react'
 import {
   Cycle,
   cyclesReducers,
@@ -27,6 +33,8 @@ interface CycleContextType {
 interface CyclesContextProviderProps {
   children: ReactNode
 }
+
+const LOCAL_STORAGE_KEY = '@ignite-timer:cycles-state-1.0.0'
 
 export const CycleContext = createContext({} as CycleContextType)
 
@@ -66,6 +74,12 @@ export const CyclesContextProvider = ({
   const interruptCurrentCycle = () => {
     dispatch(interruptCurrentCycleAction())
   }
+
+  useEffect(() => {
+    const stateJSON = JSON.stringify(cyclesState)
+
+    localStorage.setItem(LOCAL_STORAGE_KEY, stateJSON)
+  }, [cyclesState])
 
   return (
     <CycleContext.Provider
