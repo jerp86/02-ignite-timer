@@ -33,16 +33,17 @@ export const cyclesReducers = (state: CycleState, action: any) => {
         draft.cycles[currentCycleIndex].interruptedDate = new Date()
       })
     }
-    case ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED:
-      return {
-        ...state,
-        activeCycleId: null,
-        cycles: state.cycles.map((cycle) =>
-          cycle.id === state.activeCycleId
-            ? { ...cycle, finishedDate: new Date() }
-            : cycle,
-        ),
-      }
+    case ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED: {
+      const currentCycleIndex = state.cycles.findIndex(
+        ({ id }) => id === state.activeCycleId,
+      )
+      if (currentCycleIndex < 0) return state
+
+      return produce(state, (draft) => {
+        draft.activeCycleId = null
+        draft.cycles[currentCycleIndex].finishedDate = new Date()
+      })
+    }
     default:
       return state
   }
