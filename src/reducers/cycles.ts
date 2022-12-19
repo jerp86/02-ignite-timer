@@ -20,13 +20,13 @@ export enum ActionTypes {
 
 export const cyclesReducers = (state: CycleState, action: any) => {
   switch (action.type) {
-    case 'ADD_NEW_CYCLE':
+    case ActionTypes.ADD_NEW_CYCLE:
       return {
         ...state,
         cycles: [...state.cycles, action.payload.newCycle],
         activeCycleId: action.payload.newCycle.id,
       }
-    case 'INTERRUPT_CURRENT_CYCLE':
+    case ActionTypes.INTERRUPT_CURRENT_CYCLE:
       return {
         ...state,
         activeCycleId: null,
@@ -36,7 +36,7 @@ export const cyclesReducers = (state: CycleState, action: any) => {
             : cycle,
         ),
       }
-    case 'MARK_CURRENT_CYCLE_AS_FINISHED':
+    case ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED:
       return {
         ...state,
         activeCycleId: null,
