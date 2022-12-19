@@ -51,6 +51,18 @@ export const CyclesContextProvider = ({
         }
       }
 
+      if (action.type === 'INTERRUPT_CURRENT_CYCLE') {
+        return {
+          ...state,
+          activeCycleId: null,
+          cycles: state.cycles.map((cycle) =>
+            cycle.id === state.activeCycleId
+              ? { ...cycle, interruptedDate: new Date() }
+              : cycle,
+          ),
+        }
+      }
+
       return state
     },
     {
@@ -100,13 +112,6 @@ export const CyclesContextProvider = ({
   }
 
   const interruptCurrentCycle = () => {
-    // setCycles((state) =>
-    //   state.map((cycle) =>
-    //     cycle.id === activeCycle?.id
-    //       ? { ...cycle, interruptedDate: new Date() }
-    //       : cycle,
-    //   ),
-    // )
     dispatch({
       type: 'INTERRUPT_CURRENT_CYCLE',
       payload: {
