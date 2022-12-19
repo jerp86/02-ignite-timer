@@ -1,3 +1,4 @@
+import { differenceInSeconds } from 'date-fns'
 import {
   createContext,
   ReactNode,
@@ -41,8 +42,6 @@ export const CycleContext = createContext({} as CycleContextType)
 export const CyclesContextProvider = ({
   children,
 }: CyclesContextProviderProps) => {
-  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
-
   const [cyclesState, dispatch] = useReducer(
     cyclesReducers,
     {
@@ -58,6 +57,13 @@ export const CyclesContextProvider = ({
   const { activeCycleId, cycles } = cyclesState
 
   const activeCycle = cycles.find(({ id }) => id === activeCycleId)
+  const [amountSecondsPassed, setAmountSecondsPassed] = useState(() => {
+    if (activeCycle) {
+      return differenceInSeconds(new Date(), new Date(activeCycle.startDate))
+    }
+
+    return 0
+  })
 
   const setSecondsPassed = (seconds: number) => setAmountSecondsPassed(seconds)
 
