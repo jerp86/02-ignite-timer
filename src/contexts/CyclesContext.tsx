@@ -29,21 +29,37 @@ interface CyclesContextProviderProps {
   children: ReactNode
 }
 
+interface CycleState {
+  cycles: Cycle[]
+  activeCycleId: string | null
+}
+
 export const CycleContext = createContext({} as CycleContextType)
 
 export const CyclesContextProvider = ({
   children,
 }: CyclesContextProviderProps) => {
-  const [cycles, dispatch] = useReducer((state: Cycle[], action: any) => {
-    if (action.type === 'ADD_NEW_CYCLE') {
-      return [...state, action.payload.newCycle]
-    }
-
-    return state
-  }, [])
-
-  const [activeCycleId, setActiveCycleId] = useState<string | null>(null)
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
+
+  const [cycleState, dispatch] = useReducer(
+    (state: CycleState, action: any) => {
+      if (action.type === 'ADD_NEW_CYCLE') {
+        return {
+          ...state,
+          cycles: [...state.cycles, action.payload.newCycle],
+          activeCycleId: action.payload.newCycle.id,
+        }
+      }
+
+      return state
+    },
+    {
+      cycles: [],
+      activeCycleId: null,
+    },
+  )
+
+  const { activeCycleId, cycles } = cycleState
 
   const activeCycle = cycles.find(({ id }) => id === activeCycleId)
 
@@ -61,8 +77,6 @@ export const CyclesContextProvider = ({
     //       : cycle,
     //   ),
     // )
-
-    setActiveCycleId(null)
   }
 
   const setSecondsPassed = (seconds: number) => setAmountSecondsPassed(seconds)
@@ -82,8 +96,6 @@ export const CyclesContextProvider = ({
         newCycle,
       },
     })
-    // setCycles((state) => [...state, newCycle])
-    setActiveCycleId(id)
     setAmountSecondsPassed(0)
   }
 
@@ -101,8 +113,6 @@ export const CyclesContextProvider = ({
         activeCycleId,
       },
     })
-
-    setActiveCycleId(null)
   }
 
   return (
