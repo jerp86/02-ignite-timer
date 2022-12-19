@@ -43,12 +43,19 @@ export const CyclesContextProvider = ({
 }: CyclesContextProviderProps) => {
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
 
-  const [cycleState, dispatch] = useReducer(cyclesReducers, {
-    cycles: [],
-    activeCycleId: null,
-  })
+  const [cyclesState, dispatch] = useReducer(
+    cyclesReducers,
+    {
+      cycles: [],
+      activeCycleId: null,
+    },
+    () => {
+      const storedStateAsJSON = localStorage.getItem(LOCAL_STORAGE_KEY)
+      if (storedStateAsJSON) return JSON.parse(storedStateAsJSON)
+    },
+  )
 
-  const { activeCycleId, cycles } = cycleState
+  const { activeCycleId, cycles } = cyclesState
 
   const activeCycle = cycles.find(({ id }) => id === activeCycleId)
 
