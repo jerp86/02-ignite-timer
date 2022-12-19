@@ -43,39 +43,36 @@ export const CyclesContextProvider = ({
 
   const [cycleState, dispatch] = useReducer(
     (state: CycleState, action: any) => {
-      if (action.type === 'ADD_NEW_CYCLE') {
-        return {
-          ...state,
-          cycles: [...state.cycles, action.payload.newCycle],
-          activeCycleId: action.payload.newCycle.id,
-        }
+      switch (action.type) {
+        case 'ADD_NEW_CYCLE':
+          return {
+            ...state,
+            cycles: [...state.cycles, action.payload.newCycle],
+            activeCycleId: action.payload.newCycle.id,
+          }
+        case 'INTERRUPT_CURRENT_CYCLE':
+          return {
+            ...state,
+            activeCycleId: null,
+            cycles: state.cycles.map((cycle) =>
+              cycle.id === state.activeCycleId
+                ? { ...cycle, interruptedDate: new Date() }
+                : cycle,
+            ),
+          }
+        case 'MARK_CURRENT_CYCLE_AS_FINISHED':
+          return {
+            ...state,
+            activeCycleId: null,
+            cycles: state.cycles.map((cycle) =>
+              cycle.id === state.activeCycleId
+                ? { ...cycle, finishedDate: new Date() }
+                : cycle,
+            ),
+          }
+        default:
+          return state
       }
-
-      if (action.type === 'INTERRUPT_CURRENT_CYCLE') {
-        return {
-          ...state,
-          activeCycleId: null,
-          cycles: state.cycles.map((cycle) =>
-            cycle.id === state.activeCycleId
-              ? { ...cycle, interruptedDate: new Date() }
-              : cycle,
-          ),
-        }
-      }
-
-      if (action.type === 'MARK_CURRENT_CYCLE_AS_FINISHED') {
-        return {
-          ...state,
-          activeCycleId: null,
-          cycles: state.cycles.map((cycle) =>
-            cycle.id === state.activeCycleId
-              ? { ...cycle, finishedDate: new Date() }
-              : cycle,
-          ),
-        }
-      }
-
-      return state
     },
     {
       cycles: [],
